@@ -33,9 +33,6 @@ public class Reserva {
     @Column(name = "hora_fin", nullable = false)
     private LocalTime horaFin;
     
-    @Column(name = "monto_pagado", nullable = false)
-    private double montoPagado;
-    
     @Column(name = "pago_adelantado", nullable = false)
     private double pagoAdelantado;
     
@@ -48,14 +45,14 @@ public class Reserva {
     public Reserva() {}
 
     public Reserva(Cliente cliente, Salon salon, LocalDate fecha, LocalTime horaInicio,
-                   LocalTime horaFin, double pagoAdelantado, boolean estado) {
+                   LocalTime horaFin, double pagoAdelantado, List<ServicioAdicional> servicios, boolean estado) {
         this.cliente = cliente;
         this.salon = salon;
         this.fecha = fecha;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
-        this.montoPagado = pagoAdelantado;
         this.pagoAdelantado = pagoAdelantado;
+        this.servicios = servicios;
         this.cancelado = false;
         this.estado = estado;
     }
@@ -74,7 +71,7 @@ public class Reserva {
     }
 
     public double calcularPagoPendiente() {
-        return calcularMontoTotal() - (montoPagado + pagoAdelantado);
+        return calcularMontoTotal() - pagoAdelantado;
     }
     
     public Long getId() {
@@ -133,14 +130,6 @@ public class Reserva {
         this.horaFin = horaFin;
     }
 
-    public double getMontoPagado() {
-        return montoPagado;
-    }
-
-    public void setMontoPagado(double montoPagado) {
-        this.montoPagado = montoPagado;
-    }
-
     public double getPagoAdelantado() {
         return pagoAdelantado;
     }
@@ -174,9 +163,8 @@ public class Reserva {
                ", Fecha=" + fecha +
                ", Hora Inicio=" + horaInicio +
                ", Hora Fin=" + horaFin +
-               ", Monto Pagado=" + montoPagado +
                ", Pago Adelantado=" + pagoAdelantado +
-               ", Cancelado=" + (cancelado ? "Sí" : "No") +
+               ", Cancelado=" + (cancelado ? "CANCELADO" : "PAGO PENDIENTE") +
                ", Estado=" + (estado ? "Activo" : "Inactivo") +
                '}';
     }

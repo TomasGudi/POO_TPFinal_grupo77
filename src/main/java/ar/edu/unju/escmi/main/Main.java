@@ -17,10 +17,9 @@ public class Main {
 	private static IServicioAdicionalDao ServicioAdicionalDAO = new ServicioAdicionalDAOImpl();
 	private static IReservaDao ReservaDAO = new ReservaDAOImpl();
 
-	private static Scanner scanner = new Scanner(System.in);
-
 	public static void main(String[] args) {
 		int opcion;
+        Scanner scanner = new Scanner(System.in);
 		do {
 			System.out.println("\nMenú de opciones:");
 			System.out.println("1. Alta de Cliente");
@@ -39,16 +38,16 @@ public class Main {
 
 			switch (opcion) {
 			case 1:
-				altaCliente();
+				altaCliente(scanner);
 				break;
 			case 2:
 				consultarClientes();
 				break;
 			case 3:
-				modificarCliente();
+				modificarCliente(scanner);
 				break;
 			case 4:
-				realizarPago();
+				realizarPago(scanner);
 				break;
 			case 5:
 				realizarReserva();
@@ -57,7 +56,7 @@ public class Main {
 				consultarTodasLasReservas();
 				break;
 			case 7:
-				consultarUnaReserva();
+				consultarUnaReserva(scanner);
 				break;
 			case 8:
 				consultarSalones();
@@ -72,10 +71,11 @@ public class Main {
 				System.out.println("Opción no válida. Intente nuevamente.");
 			}
 		} while (opcion != 10);
+		
+		scanner.close(); 
 	}
 
-	private static void altaCliente() {
-		Scanner scanner = new Scanner(System.in);
+	private static void altaCliente(Scanner scanner) {
 		System.out.print("Ingrese nombre del cliente: ");
 		String nombre = scanner.nextLine();
 		System.out.print("Ingrese apellido del cliente: ");
@@ -88,7 +88,7 @@ public class Main {
 		System.out.print("Ingrese teléfono del cliente: ");
 		String telefono = scanner.nextLine();
 
-		Cliente cliente = new Cliente(dni, nombre, apellido, domicilio, telefono, true);
+		Cliente cliente = new Cliente(nombre, apellido, domicilio, dni, telefono, true);
 		ClienteDAO.guardar(cliente);
 		System.out.println("Cliente registrado exitosamente.");
 	}
@@ -100,8 +100,7 @@ public class Main {
 		}
 	}
 
-	private static void modificarCliente() {
-		Scanner scanner = new Scanner(System.in);
+	private static void modificarCliente(Scanner scanner) {
 		System.out.print("Ingrese el ID del cliente a modificar: ");
 		long id = scanner.nextLong();
 		scanner.nextLine();
@@ -125,8 +124,7 @@ public class Main {
 		System.out.println("Cliente actualizado exitosamente.");
 	}
 
-	private static void realizarPago() {
-		Scanner scanner = new Scanner(System.in);
+	private static void realizarPago(Scanner scanner) {
 		System.out.print("Ingrese el ID de la reserva: ");
 		long reservaId = scanner.nextLong();
 		scanner.nextLine();
@@ -152,8 +150,8 @@ public class Main {
 			return;
 		}
 
-		reserva.setMontoPagado(reserva.getMontoPagado() + pago);
-		if (reserva.calcularPagoPendiente() == 0) {
+		reserva.setPagoAdelantado(reserva.getPagoAdelantado() + pago);
+		if (reserva.calcularPagoPendiente() >= 0) {
 			reserva.setCancelado(true);
 		}
 
@@ -162,7 +160,7 @@ public class Main {
 				+ (reserva.isCancelado() ? "CANCELADO" : "PAGO PENDIENTE"));
 	}
 
-}
+
 
 	private static void realizarReserva() {
 		Scanner scanner = new Scanner(System.in);
@@ -170,11 +168,11 @@ public class Main {
 		System.out.print("Ingrese el DNI del cliente: ");
 		long dni = scanner.nextLong();
 		scanner.nextLine(); 
-		Cliente cliente = ClienteDAO.buscarPorDni(dni);
+		Cliente cliente = ClienteDAO.buscarPorId(dni);
 		if (cliente == null) {
 			System.out.println("Cliente no encontrado. Procediendo a registrarlo.");
-			altaCliente();
-			cliente = ClienteDAO.buscarPorDni(dni);
+			altaCliente(scanner);
+			cliente = ClienteDAO.buscarPorId(dni);
 		}
 
 		consultarSalones();
@@ -217,19 +215,22 @@ public class Main {
 				ServicioAdicional servicio = ServicioAdicionalDAO.buscarPorId(servicioId);
 				if (servicio != null) {
 					serviciosAdicionales.add(servicio);
+					
 				}
 			}
 		}
 
-		// Crear reserva
-		Reserva reserva = new Reserva(cliente, salon, fecha, horaInicio, horaFin, serviciosAdicionales);
+		double pagoAdelantado =	0;
+		Reserva reserva = new Reserva(cliente, salon, fecha, horaInicio, horaFin, pagoAdelantado, serviciosAdicionales, true);
 		System.out.print("¿Desea realizar un pago adelantado? (s/n): ");
 		if (scanner.nextLine().equalsIgnoreCase("s")) {
 			System.out.print("Ingrese el monto del pago adelantado: ");
-			double pagoAdelantado = scanner.nextDouble();
+			pagoAdelantado = scanner.nextDouble();
 			scanner.nextLine(); 
 			reserva.setPagoAdelantado(pagoAdelantado);
+			
 		}
+		
 
 		ReservaDAO.guardar(reserva);
 		System.out.println("Reserva realizada exitosamente.");
@@ -237,16 +238,15 @@ public class Main {
 
 	private static void consultarTodasLasReservas() {
 		System.out.println("\nListado de Reservas:");
-		for (Reserva reserva : ReservaDAO.obtenerTodas()) {
+		for (Reserva reserva : ReservaDAO.obtenerTodos()) {
 			System.out.println(reserva);
 		}
 	}
 
-	private static void consultarUnaReserva() {
-		Scanner scanner = new Scanner(System.in);
+	private static void consultarUnaReserva(Scanner scanner) {
 		System.out.print("Ingrese el ID de la reserva: ");
 		long reservaId = scanner.nextLong();
-		scanner.nextLine(); // Limpiar el buffer
+		scanner.nextLine(); 
 		Reserva reserva = ReservaDAO.buscarPorId(reservaId);
 		if (reserva == null) {
 			System.out.println("Reserva no encontrada.");
@@ -269,3 +269,4 @@ public class Main {
 			System.out.println(servicio);
 		}
 	}
+}
