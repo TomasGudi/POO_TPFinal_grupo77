@@ -9,7 +9,8 @@ import ar.edu.unju.escmi.dao.IServicioAdicionalDao;
 import ar.edu.unju.escmi.entities.ServicioAdicional;
 
 public class ServicioAdicionalDAOImpl implements IServicioAdicionalDao {
-    private EntityManager manager = EmfSingleton.getInstance().getEmf().createEntityManager();
+	
+    private static EntityManager manager = EmfSingleton.getInstance().getEmf().createEntityManager();
 
     @Override
     public void guardar(ServicioAdicional servicio) {

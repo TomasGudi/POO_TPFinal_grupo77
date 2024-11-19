@@ -23,7 +23,7 @@ public class ReservaTest {
     public void testGuardarReserva() {
         Cliente cliente = new Cliente("Juan", "Pérez", "Calle Falsa 123", 12345678, "3881234567", true);
         Salon salon = new Salon("Salón Principal", 100, true, 15000);
-        Reserva reserva = new Reserva(cliente, salon, LocalDate.now(), LocalTime.of(18, 0), LocalTime.of(23, 0), 5000, true);
+        Reserva reserva = new Reserva(cliente, salon, LocalDate.now(), LocalTime.of(18, 0), LocalTime.of(23, 0), 5000, null, true);
 
         reservaDAO.guardar(reserva);
         assertNotNull(reserva.getId());

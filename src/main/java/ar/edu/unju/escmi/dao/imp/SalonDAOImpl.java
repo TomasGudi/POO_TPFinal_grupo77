@@ -9,7 +9,8 @@ import ar.edu.unju.escmi.dao.ISalonDao;
 import ar.edu.unju.escmi.entities.Salon;
 
 public class SalonDAOImpl implements ISalonDao {
-    private EntityManager manager = EmfSingleton.getInstance().getEmf().createEntityManager();
+	
+    private static EntityManager manager = EmfSingleton.getInstance().getEmf().createEntityManager();
 
     @Override
     public void guardar(Salon salon) {

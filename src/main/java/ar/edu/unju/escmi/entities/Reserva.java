@@ -24,33 +24,56 @@ public class Reserva {
     @JoinColumn(name = "reserva_id")
     private List<ServicioAdicional> servicios;
 
+    @Column(name = "fecha", nullable = false)
     private LocalDate fecha;
+    
+    @Column(name = "hora_inicio", nullable = false)
     private LocalTime horaInicio;
+    
+    @Column(name = "hora_fin", nullable = false)
     private LocalTime horaFin;
-    private double montoPagado;
+    
+    @Column(name = "pago_adelantado", nullable = false)
     private double pagoAdelantado;
-    private boolean cancelado; // Si está completamente pagado
-    private boolean estado; // Estado lógico para eliminaciones lógicas
+    
+    @Column(name = "cancelado", nullable = false)
+    private boolean cancelado; 
+    
+    @Column(name = "estado")
+    private boolean estado;
 
-    // Constructor por defecto
     public Reserva() {}
 
-    // Constructor completo
     public Reserva(Cliente cliente, Salon salon, LocalDate fecha, LocalTime horaInicio,
-                   LocalTime horaFin, double pagoAdelantado, boolean estado) {
+                   LocalTime horaFin, double pagoAdelantado, List<ServicioAdicional> servicios, boolean estado) {
         this.cliente = cliente;
         this.salon = salon;
         this.fecha = fecha;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
-        this.montoPagado = pagoAdelantado;
         this.pagoAdelantado = pagoAdelantado;
+        this.servicios = servicios;
         this.cancelado = false;
         this.estado = estado;
     }
 
-    // Getters y Setters
+    public double calcularCostoHorarioExtendido() {
+        int horasExtras = horaFin.getHour() - (horaInicio.getHour() + 4); 
+        return horasExtras > 0 ? horasExtras * 10000 : 0;
+    }
 
+    public double calcularMontoTotal() {
+        double costoAdicional = calcularCostoHorarioExtendido();
+        double costoServicios = servicios.stream()
+                                    .mapToDouble(ServicioAdicional::getPrecio)
+                                    .sum();
+        return salon.getPrecio() + costoAdicional + costoServicios;
+    }
+
+    public double calcularPagoPendiente() {
+        return calcularMontoTotal() - pagoAdelantado;
+    }
+    
     public Long getId() {
         return id;
     }
@@ -107,14 +130,6 @@ public class Reserva {
         this.horaFin = horaFin;
     }
 
-    public double getMontoPagado() {
-        return montoPagado;
-    }
-
-    public void setMontoPagado(double montoPagado) {
-        this.montoPagado = montoPagado;
-    }
-
     public double getPagoAdelantado() {
         return pagoAdelantado;
     }
@@ -148,9 +163,8 @@ public class Reserva {
                ", Fecha=" + fecha +
                ", Hora Inicio=" + horaInicio +
                ", Hora Fin=" + horaFin +
-               ", Monto Pagado=" + montoPagado +
                ", Pago Adelantado=" + pagoAdelantado +
-               ", Cancelado=" + (cancelado ? "Sí" : "No") +
+               ", Cancelado=" + (cancelado ? "CANCELADO" : "PAGO PENDIENTE") +
                ", Estado=" + (estado ? "Activo" : "Inactivo") +
                '}';
     }
