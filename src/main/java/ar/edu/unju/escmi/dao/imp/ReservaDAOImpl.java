@@ -51,7 +51,7 @@ public class ReservaDAOImpl implements IReservaDao {
             manager.getTransaction().begin();
             Reserva reserva = manager.find(Reserva.class, id);
             if (reserva != null) {
-                reserva.setEstado(false); // Eliminación lógica
+                reserva.setEstado(false);
                 manager.merge(reserva);
             }
             manager.getTransaction().commit();
