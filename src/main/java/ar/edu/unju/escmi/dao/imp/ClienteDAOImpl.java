@@ -9,7 +9,7 @@ import ar.edu.unju.escmi.dao.IClienteDao;
 import ar.edu.unju.escmi.entities.Cliente;
 
 public class ClienteDAOImpl implements IClienteDao {
-    private EntityManager manager = EmfSingleton.getInstance().getEmf().createEntityManager();
+    private static EntityManager manager = EmfSingleton.getInstance().getEmf().createEntityManager();
 
     @Override
     public void guardar(Cliente cliente) {

@@ -24,18 +24,29 @@ public class Reserva {
     @JoinColumn(name = "reserva_id")
     private List<ServicioAdicional> servicios;
 
+    @Column(name = "fecha", nullable = false)
     private LocalDate fecha;
+    
+    @Column(name = "hora_inicio", nullable = false)
     private LocalTime horaInicio;
+    
+    @Column(name = "hora_fin", nullable = false)
     private LocalTime horaFin;
+    
+    @Column(name = "monto_pagado", nullable = false)
     private double montoPagado;
+    
+    @Column(name = "pago_adelantado", nullable = false)
     private double pagoAdelantado;
-    private boolean cancelado; // Si está completamente pagado
-    private boolean estado; // Estado lógico para eliminaciones lógicas
+    
+    @Column(name = "cancelado", nullable = false)
+    private boolean cancelado; 
+    
+    @Column(name = "estado")
+    private boolean estado;
 
-    // Constructor por defecto
     public Reserva() {}
 
-    // Constructor completo
     public Reserva(Cliente cliente, Salon salon, LocalDate fecha, LocalTime horaInicio,
                    LocalTime horaFin, double pagoAdelantado, boolean estado) {
         this.cliente = cliente;
@@ -49,8 +60,23 @@ public class Reserva {
         this.estado = estado;
     }
 
-    // Getters y Setters
+    public double calcularCostoHorarioExtendido() {
+        int horasExtras = horaFin.getHour() - (horaInicio.getHour() + 4); 
+        return horasExtras > 0 ? horasExtras * 10000 : 0;
+    }
 
+    public double calcularMontoTotal() {
+        double costoAdicional = calcularCostoHorarioExtendido();
+        double costoServicios = servicios.stream()
+                                    .mapToDouble(ServicioAdicional::getPrecio)
+                                    .sum();
+        return salon.getPrecio() + costoAdicional + costoServicios;
+    }
+
+    public double calcularPagoPendiente() {
+        return calcularMontoTotal() - (montoPagado + pagoAdelantado);
+    }
+    
     public Long getId() {
         return id;
     }
