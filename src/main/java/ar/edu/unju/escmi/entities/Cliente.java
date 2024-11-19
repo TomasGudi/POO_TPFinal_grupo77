@@ -19,7 +19,7 @@ public class Cliente {
     private String domicilio;
 	
     @Column(name = "dni", nullable = false, unique = true) 
-    private int dni;
+    private long dni;
 	
     @Column(name = "telefono", length = 20)
     private String telefono;
@@ -30,7 +30,7 @@ public class Cliente {
 	public Cliente() {
 	}
 
-	public Cliente(String nombre, String apellido, String domicilio, int dni, String telefono, boolean estado) {
+	public Cliente(String nombre, String apellido, String domicilio, long dni, String telefono, boolean estado) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.domicilio = domicilio;
@@ -71,7 +71,7 @@ public class Cliente {
 		this.domicilio = domicilio;
 	}
 
-	public int getDni() {
+	public long getDni() {
 		return dni;
 	}
 
