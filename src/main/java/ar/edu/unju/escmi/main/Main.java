@@ -3,6 +3,7 @@ package ar.edu.unju.escmi.main;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import ar.edu.unju.escmi.entities.*;
@@ -17,59 +18,65 @@ public class Main {
 	private static IServicioAdicionalDao ServicioAdicionalDAO = new ServicioAdicionalDAOImpl();
 	private static IReservaDao ReservaDAO = new ReservaDAOImpl();
 
-	public static void main(String[] args) {
-		int opcion;
+	public static void main(String[] args) {		
+		int opcion = 0;
         Scanner scanner = new Scanner(System.in);
+        
 		do {
-			System.out.println("\nMenú de opciones:");
-			System.out.println("1. Alta de Cliente");
-			System.out.println("2. Consultar Clientes");
-			System.out.println("3. Modificar Cliente");
-			System.out.println("4. Realizar Pago");
-			System.out.println("5. Realizar Reserva");
-			System.out.println("6. Consultar todas las Reservas");
-			System.out.println("7. Consultar una Reserva");
-			System.out.println("8. Consultar Salones");
-			System.out.println("9. Consultar Servicios Adicionales");
-			System.out.println("10. Salir");
-			System.out.print("Seleccione una opción: ");
-			opcion = scanner.nextInt();
-			scanner.nextLine();
-
-			switch (opcion) {
-			case 1:
-				altaCliente(scanner);
-				break;
-			case 2:
-				consultarClientes();
-				break;
-			case 3:
-				modificarCliente(scanner);
-				break;
-			case 4:
-				realizarPago(scanner);
-				break;
-			case 5:
-				realizarReserva();
-				break;
-			case 6:
-				consultarTodasLasReservas();
-				break;
-			case 7:
-				consultarUnaReserva(scanner);
-				break;
-			case 8:
-				consultarSalones();
-				break;
-			case 9:
-				consultarServiciosAdicionales();
-				break;
-			case 10:
-				System.out.println("Saliendo del sistema...");
-				break;
-			default:
-				System.out.println("Opción no válida. Intente nuevamente.");
-			}
+			try {
+				System.out.println("\nMenú de opciones:");
+				System.out.println("1. Alta de Cliente");
+				System.out.println("2. Consultar Clientes");
+				System.out.println("3. Modificar Cliente");
+				System.out.println("4. Realizar Pago");
+				System.out.println("5. Realizar Reserva");
+				System.out.println("6. Consultar todas las Reservas");
+				System.out.println("7. Consultar una Reserva");
+				System.out.println("8. Consultar Salones");
+				System.out.println("9. Consultar Servicios Adicionales");
+				System.out.println("10. Salir");
+				System.out.print("Seleccione una opción: ");
+				opcion = scanner.nextInt();
+				scanner.nextLine();
+				
+				switch (opcion) {
+				case 1:
+					altaCliente(scanner);
+					break;
+				case 2:
+					consultarClientes();
+					break;
+				case 3:
+					modificarCliente(scanner);
+					break;
+				case 4:
+					realizarPago(scanner);
+					break;
+				case 5:
+					realizarReserva();
+					break;
+				case 6:
+					consultarTodasLasReservas();
+					break;
+				case 7:
+					consultarUnaReserva(scanner);
+					break;
+				case 8:
+					consultarSalones();
+					break;
+				case 9:
+					consultarServiciosAdicionales();
+					break;
+				case 10:
+					System.out.println("Saliendo del sistema...");
+					break;
+				default:
+					System.out.println("Opción no válida. Intente nuevamente.");
+				}
+			} catch (InputMismatchException e) {
+		        System.out.println("Error: Entrada inválida. Por favor, ingrese un valor numérico.");
+		        scanner.nextLine();
+		    }
 		} while (opcion != 10);
 		
 		scanner.close(); 
@@ -94,10 +101,23 @@ public class Main {
 	}
 
 	private static void consultarClientes() {
-		System.out.println("\nListado de Clientes Activos:");
-		for (Cliente cliente : ClienteDAO.obtenerTodos()) {
-			System.out.println(cliente);
-		}
+		try {
+	        List<Cliente> clientes = ClienteDAO.obtenerTodos();
+
+	        if (clientes.isEmpty()) {
+	            throw new ClienteNoExisteException("No hay clientes activos en el sistema.");
+	        }
+
+	        System.out.println("\nListado de Clientes Activos:");
+	        for (Cliente cliente : clientes) {
+	            System.out.println(cliente);
+	        }
+
+	    } catch (ClienteNoExisteException e) {
+	        System.out.println("Error: " + e.getMessage());
+	    } catch (Exception e) {
+	        System.out.println("Ocurrió un error inesperado: " + e.getMessage());
+	    }
 	}
 
 	private static void modificarCliente(Scanner scanner) {
