@@ -20,14 +20,14 @@ public class ServicioAdicionalTest {
 
     @Test
     public void testGuardarServicio() {
-        ServicioAdicional servicio = new ServicioAdicional("Catering", 5000.0, true);
+        ServicioAdicional servicio = new ServicioAdicional("Catering", 5000.0);
         servicioDAO.guardar(servicio);
         assertNotNull(servicio.getId(), "El servicio debería haberse guardado con un ID generado.");
     }
 
     @Test
     public void testBuscarPorId() {
-        ServicioAdicional servicio = new ServicioAdicional("DJ", 3000.0, true);
+        ServicioAdicional servicio = new ServicioAdicional("DJ", 3000.0);
         servicioDAO.guardar(servicio);
 
         ServicioAdicional encontrado = servicioDAO.buscarPorId(servicio.getId());
@@ -37,7 +37,7 @@ public class ServicioAdicionalTest {
 
     @Test
     public void testActualizarServicio() {
-        ServicioAdicional servicio = new ServicioAdicional("Decoración", 4000.0, true);
+        ServicioAdicional servicio = new ServicioAdicional("Decoración", 4000.0);
         servicioDAO.guardar(servicio);
 
         servicio.setPrecio(4500.0);
