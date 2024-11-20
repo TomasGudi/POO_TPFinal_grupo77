@@ -21,8 +21,12 @@ public class Reserva {
     @JoinColumn(name = "salon_id", nullable = false)
     private Salon salon;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "reserva_id")
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+        name = "reserva_servicios",
+        joinColumns = @JoinColumn(name = "reserva_id"),
+        inverseJoinColumns = @JoinColumn(name = "servicio_id")
+    )
     private List<ServicioAdicional> servicios;
 
     @Column(name = "fecha", nullable = false)
