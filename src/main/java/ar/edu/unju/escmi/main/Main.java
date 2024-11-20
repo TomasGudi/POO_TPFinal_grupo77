@@ -60,13 +60,13 @@ public class Main {
 				boolean datoInvalido=true;
 				do {
 					try {
-						System.out.print("\nIngrese el ID del cliente: ");
+						System.out.print("\nIngrese el ID: ");
 						long id = sc.nextLong();
 						consultarCliente(id);
 						datoInvalido=false;
 					}
 					catch(Exception e) {
-						System.out.print("\nDato no valido, ingrese nuevamente el id.");
+						System.out.print("\nDato no valido, INGRESE DEVUELTA EL ID.");
 					}
 					finally {
 						sc.nextLine();
@@ -83,7 +83,7 @@ public class Main {
 					realizarPago(sc);
 				}
 				else {
-					System.out.println("\nNo hay pagos pendientes.");
+					System.out.println("\nSIN PAGOS PENDIENTES.");
 				}
 			break;
 			
@@ -99,13 +99,13 @@ public class Main {
 				datoInvalido=true;
 				do {
 					try {
-						System.out.print("\nIngrese el ID de la reserva: ");
+						System.out.print("\nIngrese el id de la reserva por favor: ");
 						long id = sc.nextLong();
 						consultarUnaReserva(id);
 						datoInvalido=false;
 					}
 					catch(Exception e) {
-						System.out.println("\nDato no valido, ingrese nuevamente el ID.");
+						System.out.println("\nDato no valido, INGRESE DE NUEVO EL ID.");
 					}
 					finally {
 						sc.nextLine();
@@ -158,13 +158,13 @@ public class Main {
 	
 	public static void altaCliente(Scanner sc) {
 
-		System.out.print("\nIngrese nombre: ");
+		System.out.print("\nIngrese el nombre del nuevo cliente: ");
 		String nombre = sc.nextLine();
-		System.out.print("Ingrese apellido: ");
+		System.out.print("Ingrese el apellido del nuevo cliente: ");
 		String apellido = sc.nextLine();
-		System.out.print("Ingrese domicilio: ");
+		System.out.print("Ingrese el domicilio correspondiente: ");
 		String domicilio = sc.nextLine();
-		System.out.print("Ingrese el numero telefonico: ");
+		System.out.print("Ingrese el numero telefonico correspondiente: ");
 		String tel = sc.nextLine();
 		
 		boolean datoInvalido=false;
@@ -172,11 +172,11 @@ public class Main {
 		do {
 			try {
 				datoInvalido=false;
-				System.out.print("Ingrese DNI: ");
+				System.out.print("Ingrese el DNI del cliente: ");
 				dni = sc.nextInt();
 			}
 			catch(Exception e) {
-				System.out.println("\nDato no valido, vuelva a ingresar el DNI");
+				System.out.println("\nDato no valido, por favor,  vuelva a ingresar el DNI");
 				datoInvalido=true;
 			}
 			finally {
@@ -188,7 +188,7 @@ public class Main {
 		
 		clienteDaoImp.guardarCliente(cliente);
 	 
-		System.out.println("\nCliente registrado exitosamente.\n");
+		System.out.println("\nCliente registrado con exito.\n");
 	}
 	
 	public static void consultarCliente(long id) {
