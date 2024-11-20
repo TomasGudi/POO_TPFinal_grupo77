@@ -1,44 +1,57 @@
 package ar.edu.unju.escmi.entities;
 
-import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "salones")
 public class Salon {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(name = "nombre", nullable = false, length = 100)
-	private String nombre;
-
-	@Column(name = "capacidad", nullable = false)
-	private int capacidad;
-
-	@Column(name = "precio", nullable = false)
-	private double precio;
-
-	@Column(name = "pileta")
-	private boolean conPileta;
+	@Column(name = "salon_id")
+	private long id;
 	
-	@Column(name = "estado")
-    private boolean estado = true;
-
+	@Column(name = "salon_nombre")
+	private String nombre;
+	
+	@Column(name = "salon_capacidad")
+	private int capacidad;
+	
+	@Column(name = "salon_con_pileta")
+	private boolean conPileta = false;
+	
+	@Column(name = "salon_precio", nullable = false)
+	private double precio;
+	
+	@OneToMany(mappedBy = "salon", cascade = CascadeType.ALL)
+	private List<Reserva> reservas = new ArrayList<>();
+	
 	public Salon() {
 	}
 
-	public Salon(String nombre, int capacidad, boolean conPileta, double precio) {
+	public Salon(String nombre, int capacidad, boolean conPileta , double precio) {
+		super();
 		this.nombre = nombre;
 		this.capacidad = capacidad;
+		this.conPileta = conPileta; 
 		this.precio = precio;
-		this.conPileta = conPileta;
 	}
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -73,18 +86,25 @@ public class Salon {
 	public void setPrecio(double precio) {
 		this.precio = precio;
 	}
-	
-	public boolean isEstado() {
-		return estado;
+
+	public List<Reserva> getReservas() {
+		return reservas;
 	}
 
-	public void setEstado(boolean estado) {
-		this.estado = estado;
+	public void setReservas(Reserva reserva) {
+		reservas.add(reserva);
 	}
 
-	@Override
-	public String toString() {
-		return "Salon{" + "ID=" + id + ", Nombre='" + nombre + '\'' + ", Capacidad=" + capacidad + ", Con Pileta="
-				+ (conPileta ? "Sí" : "No") + ", Precio=" + precio + '}';
+	public void mostrarDatos() {
+		System.out.println("Salon: " + id);
+		System.out.println("Nombre del salon: " + nombre);
+		System.out.println("Capacidad: " + capacidad);
+		if(conPileta == false) {
+			System.out.println("Pileta: No"); 	
+		}
+		else {
+			System.out.println("Pileta: Si");
+		}
+		System.out.println("Precio: $" + precio);
 	}
 }

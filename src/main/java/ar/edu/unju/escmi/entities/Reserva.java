@@ -1,175 +1,213 @@
 package ar.edu.unju.escmi.entities;
 
-import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "reservas")
 public class Reserva {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reserva_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "reserva_id")
+	private long id;
+	
+	@ManyToOne
+	@JoinColumn(name = "cliente_id")
+	private Cliente cliente;
+	
+	@ManyToOne
+	@JoinColumn(name = "salon_id")
+	private Salon salon;
+	
+	@Column(name = "reserva_fecha")
+	private LocalDate fecha;
+	
+	@Column(name = "reserva_hora_inicio")
+	private short horaInicio;
+	
+	@Column(name = "reserva_hora_fin")
+	private short horaFin;
+	
+	@Column(name = "reserva_monto_pagado")
+	private double montoPagado;
+	
+	@OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)
+    private List<ServicioAdicional> servicios = new ArrayList<>();
+	
+	@Column(name = "reserva_pago_adelantado")
+	private double pagoAdelantado;
+	
+	@Column(name = "reserva_cancelado")
+	private boolean cancelado = true;
+	
+	@Column(name = "reserva_estado")
+	private boolean estado;
+	
+	public Reserva() {
+	}
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente;
+	public Reserva(Cliente cliente, Salon salon, LocalDate fecha, short horaInicio, short horaFin, double montoPagado,
+			double pagoAdelantado, boolean cancelado) {
+		super();
+		this.cliente = cliente;
+		this.salon = salon;
+		this.fecha = fecha;
+		this.horaInicio = horaInicio;
+		this.horaFin = horaFin;
+		this.montoPagado = montoPagado;
+		this.pagoAdelantado = pagoAdelantado;
+		this.cancelado = cancelado;
+	}
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "salon_id", nullable = false)
-    private Salon salon;
+	public long getId() {
+		return id;
+	}
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(
-        name = "reserva_servicios",
-        joinColumns = @JoinColumn(name = "reserva_id"),
-        inverseJoinColumns = @JoinColumn(name = "servicio_id")
-    )
-    private List<ServicioAdicional> servicios;
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    @Column(name = "fecha", nullable = false)
-    private LocalDate fecha;
-    
-    @Column(name = "hora_inicio", nullable = false)
-    private LocalTime horaInicio;
-    
-    @Column(name = "hora_fin", nullable = false)
-    private LocalTime horaFin;
-    
-    @Column(name = "pago_adelantado", nullable = false)
-    private double pagoAdelantado;
-    
-    @Column(name = "cancelado", nullable = false)
-    private boolean cancelado; 
-    
-    @Column(name = "estado")
-    private boolean estado;
+	public Cliente getCliente() {
+		return cliente;
+	}
 
-    public Reserva() {}
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
 
-    public Reserva(Cliente cliente, Salon salon, LocalDate fecha, LocalTime horaInicio,
-                   LocalTime horaFin, double pagoAdelantado, List<ServicioAdicional> servicios, boolean estado) {
-        this.cliente = cliente;
-        this.salon = salon;
-        this.fecha = fecha;
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
-        this.pagoAdelantado = pagoAdelantado;
-        this.servicios = servicios;
-        this.cancelado = false;
-        this.estado = estado;
-    }
+	public Salon getSalon() {
+		return salon;
+	}
 
-    public double calcularCostoHorarioExtendido() {
-        int horasExtras = horaFin.getHour() - (horaInicio.getHour() + 4); 
-        return horasExtras > 0 ? horasExtras * 10000 : 0;
-    }
+	public void setSalon(Salon salon) {
+		this.salon = salon;
+	}
 
-    public double calcularMontoTotal() {
-        double costoAdicional = calcularCostoHorarioExtendido();
-        double costoServicios = servicios.stream()
-                                    .mapToDouble(ServicioAdicional::getPrecio)
-                                    .sum();
-        return salon.getPrecio() + costoAdicional + costoServicios;
-    }
+	public LocalDate getFecha() {
+		return fecha;
+	}
 
-    public double calcularPagoPendiente() {
-        return calcularMontoTotal() - pagoAdelantado;
-    }
-    
-    public Long getId() {
-        return id;
-    }
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public short getHoraInicio() {
+		return horaInicio;
+	}
 
-    public Cliente getCliente() {
-        return cliente;
-    }
+	public void setHoraInicio(short horaInicio) {
+		this.horaInicio = horaInicio;
+	}
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
+	public short getHoraFin() {
+		return horaFin;
+	}
 
-    public Salon getSalon() {
-        return salon;
-    }
+	public void setHoraFin(short horaFin) {
+		this.horaFin = horaFin;
+	}
 
-    public void setSalon(Salon salon) {
-        this.salon = salon;
-    }
+	public double getMontoPagado() {
+		return montoPagado;
+	}
 
-    public List<ServicioAdicional> getServicios() {
-        return servicios;
-    }
+	public void setMontoPagado(double montoPagado) {
+		this.montoPagado = montoPagado;
+	}
 
-    public void setServicios(List<ServicioAdicional> servicios) {
-        this.servicios = servicios;
-    }
+	public List<ServicioAdicional> getServicios() {
+		return servicios;
+	}
 
-    public LocalDate getFecha() {
-        return fecha;
-    }
+	public void setServicios(ServicioAdicional servicio) {
+		servicios.add(servicio);
+	}
 
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
+	public double getPagoAdelantado() {
+		return pagoAdelantado;
+	}
 
-    public LocalTime getHoraInicio() {
-        return horaInicio;
-    }
+	public void setPagoAdelantado(double pagoAdelantado) {
+		this.pagoAdelantado = pagoAdelantado;
+	}
 
-    public void setHoraInicio(LocalTime horaInicio) {
-        this.horaInicio = horaInicio;
-    }
+	public boolean isCancelado() {
+		return cancelado;
+	}
 
-    public LocalTime getHoraFin() {
-        return horaFin;
-    }
+	public void setCancelado(boolean cancelado) {
+		this.cancelado = cancelado;
+	}
 
-    public void setHoraFin(LocalTime horaFin) {
-        this.horaFin = horaFin;
-    }
+	public boolean isEstado() {
+		return estado;
+	}
 
-    public double getPagoAdelantado() {
-        return pagoAdelantado;
-    }
-
-    public void setPagoAdelantado(double pagoAdelantado) {
-        this.pagoAdelantado = pagoAdelantado;
-    }
-
-    public boolean isCancelado() {
-        return cancelado;
-    }
-
-    public void setCancelado(boolean cancelado) {
-        this.cancelado = cancelado;
-    }
-
-    public boolean isEstado() {
-        return estado;
-    }
-
-    public void setEstado(boolean estado) {
-        this.estado = estado;
-    }
-
-    @Override
-    public String toString() {
-        return "Reserva{" +
-               "ID =" + id +
-               ", Cliente = " + cliente.getNombre() + " " + cliente.getApellido() +
-               ", Salón = " + salon.getNombre() +
-               ", Fecha = " + fecha +
-               ", Hora de inicio = " + horaInicio +
-               ", Hora fin = " + horaFin +
-               ", Pago Adelantado = $" + pagoAdelantado +
-               ", Cancelado = " + (cancelado ? "CANCELADO" : "PAGO PENDIENTE: $" + calcularPagoPendiente()) +
-               '}';
-    }
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
+	
+	public double calcularCostoHorarioExtendido() {
+		int horasReservadas = horaFin - horaInicio; 
+		int horasExtras = horasReservadas - 4;
+		
+		if(horasExtras > 0) {
+			return horasExtras * 10000;
+		}
+		return 0;
+	}
+	
+	public double calcularMontoTotal() {
+		double costoServicios = (servicios != null?
+								servicios.stream()
+								.mapToDouble(ServicioAdicional::getPrecio)
+								.sum() : 0);
+		
+		double costoHorarioExtendido = calcularCostoHorarioExtendido();
+		return salon.getPrecio() + costoServicios + costoHorarioExtendido;
+	}
+	
+	public double calcularPagoPendiente() {
+		return calcularMontoTotal() - pagoAdelantado;
+	}
+	
+	public void mostrarDatos() {
+		System.out.println("Reserva: " + id);
+		System.out.println("Cliente: " + cliente.getNombre());
+		System.out.println("Salon: " + salon.getNombre() + " - Capacidad: " + salon.getCapacidad());
+		System.out.println("Fecha: " + fecha);
+		System.out.println("Reservado de: " + horaInicio + " - " + horaFin);
+		
+		if(servicios != null && !servicios.isEmpty()) {
+			System.out.println("Servicios adicionales: ");
+			servicios.forEach(servicio ->
+			System.out.println(" -" + servicio.getDescripcion() + ": $" + servicio.getPrecio()));
+		}
+		else {
+			System.out.println("No se han contratado servicios adicionales");
+		}
+		
+		System.out.println("Monto pagado: $" + montoPagado);
+		System.out.println("Costo por horario extendido: $" + calcularCostoHorarioExtendido());
+		System.out.println("Monto total: $" + calcularMontoTotal());
+		if (cancelado == true) {
+			System.out.println("\nCANCELADO");
+		}
+		else {
+			System.out.println("\nPAGO PENDIENTE");
+			System.out.println("Pago pendiente: $" + calcularPagoPendiente());
+		}
+	}
 }
