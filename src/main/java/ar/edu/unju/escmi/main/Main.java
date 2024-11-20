@@ -264,7 +264,6 @@ public class Main {
 				reserva.setCancelado(true);
 			}
 		}
-		
 
 		ReservaDAO.guardar(reserva);
 		System.out.println("Reserva realizada exitosamente.");
