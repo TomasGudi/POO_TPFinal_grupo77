@@ -96,15 +96,11 @@ public class Salon {
 	}
 
 	public void mostrarDatos() {
-		System.out.println("Salon: " + id);
-		System.out.println("Nombre del salon: " + nombre);
-		System.out.println("Capacidad: " + capacidad);
-		if(conPileta == false) {
-			System.out.println("Pileta: No"); 	
-		}
-		else {
-			System.out.println("Pileta: Si");
-		}
-		System.out.println("Precio: $" + precio);
-	}
+        System.out.println("\n====== Detalles del Salón =======");
+        System.out.println("ID: " + id);
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Capacidad: " + capacidad + " personas");
+        System.out.println("Pileta: " + (conPileta ? "Sí" : "No"));
+        System.out.println("Precio: $" + precio);
+    }
 }
