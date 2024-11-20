@@ -184,30 +184,33 @@ public class Reserva {
 	}
 	
 	public void mostrarDatos() {
-		System.out.println("Reserva: " + id);
-		System.out.println("Cliente: " + cliente.getNombre());
-		System.out.println("Salon: " + salon.getNombre() + " - Capacidad: " + salon.getCapacidad());
-		System.out.println("Fecha: " + fecha);
-		System.out.println("Reservado de: " + horaInicio + " - " + horaFin);
-		
-		if(servicios != null && !servicios.isEmpty()) {
-			System.out.println("Servicios adicionales: ");
-			servicios.forEach(servicio ->
-			System.out.println(" -" + servicio.getDescripcion() + ": $" + servicio.getPrecio()));
-		}
-		else {
-			System.out.println("No se han contratado servicios adicionales");
-		}
-		
-		System.out.println("Monto pagado: $" + montoPagado);
-		System.out.println("Costo por horario extendido: $" + calcularCostoHorarioExtendido());
-		System.out.println("Monto total: $" + calcularMontoTotal());
-		if (cancelado == true) {
-			System.out.println("\nCANCELADO");
-		}
-		else {
-			System.out.println("\nPAGO PENDIENTE");
-			System.out.println("Pago pendiente: $" + calcularPagoPendiente());
-		}
+	    System.out.println("\n===== Detalles de la Reserva =====");
+	    System.out.println("Reserva ID: " + id);
+	    System.out.println("Cliente: " + cliente.getNombre());
+	    System.out.println("Salón: " + salon.getNombre());
+	    System.out.println("Capacidad del salón: " + salon.getCapacidad() + " personas");
+	    System.out.println("Fecha: " + fecha);
+	    System.out.println("Horario: " + horaInicio + " - " + horaFin);
+
+	    if (servicios != null && !servicios.isEmpty()) {
+	        System.out.println("Servicios adicionales:");
+	        servicios.forEach(servicio -> 
+	            System.out.println(" - " + servicio.getDescripcion() + ": $" + servicio.getPrecio())
+	        );
+	    } else {
+	        System.out.println("No se han contratado servicios adicionales.");
+	    }
+
+	    System.out.println("Monto pagado: $" + montoPagado);
+	    System.out.println("Costo por horario extendido: $" + calcularCostoHorarioExtendido());
+	    System.out.println("Monto total: $" + calcularMontoTotal());
+
+	    if (cancelado) {
+	        System.out.println("\nESTADO: CANCELADO");
+	    } else {
+	        System.out.println("\nESTADO: PAGO PENDIENTE");
+	        System.out.println("Monto pendiente: $" + calcularPagoPendiente());
+	    }
+	    System.out.println("===================================");
 	}
 }
