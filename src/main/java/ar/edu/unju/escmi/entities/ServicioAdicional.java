@@ -82,8 +82,9 @@ public class ServicioAdicional {
 	
 
 	public void mostrarDatos() {
-		System.out.println("Servicio adicional: " + id);
-		System.out.println("Descripcion: " + descripcion);
-		System.out.println("Precio: $" + precio);
-	}
+        System.out.println("\n====== Detalles del Servicio Adicional =======");
+        System.out.println("ID: " + id);
+        System.out.println("Descripción: " + descripcion);
+        System.out.println("Precio: $" + precio);
+    }
 }
