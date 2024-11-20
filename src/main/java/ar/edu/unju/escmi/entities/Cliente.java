@@ -118,10 +118,12 @@ public class Cliente {
 	}
 
 	public void mostrarCliente() {
-		System.out.println("\nCliente: " + id);
-		System.out.println("Nombre del cliente: " + apellido + ", " + nombre);
-		System.out.println("DNI: " + dni);
-		System.out.println("Domicilio: " + domicilio);
-		System.out.println("Telefono: " + telefono);
+	    System.out.println("\n===== Información del Cliente ======");
+	    System.out.println("ID: " + id);
+	    System.out.println("Nombre: " + apellido + ", " + nombre);
+	    System.out.println("DNI: " + dni);
+	    System.out.println("Domicilio: " + domicilio);
+	    System.out.println("Teléfono: " + telefono);
+	    System.out.println("===================================");
 	}
 }
