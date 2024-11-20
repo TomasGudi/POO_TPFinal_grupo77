@@ -20,6 +20,9 @@ public class Salon {
 
 	@Column(name = "pileta")
 	private boolean conPileta;
+	
+	@Column(name = "estado")
+    private boolean estado = true;
 
 	public Salon() {
 	}
@@ -69,6 +72,14 @@ public class Salon {
 
 	public void setPrecio(double precio) {
 		this.precio = precio;
+	}
+	
+	public boolean isEstado() {
+		return estado;
+	}
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 
 	@Override

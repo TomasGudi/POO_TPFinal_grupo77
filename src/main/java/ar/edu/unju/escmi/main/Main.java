@@ -22,6 +22,13 @@ public class Main {
 		int opcion = 0;
         Scanner scanner = new Scanner(System.in);
         
+        if (SalonDAO.obtenerTodos().isEmpty()) {
+            precargarSalones();
+        }
+        if (ServicioAdicionalDAO.obtenerTodos().isEmpty()) {
+            precargarServicios();
+        } 
+        
 		do {
 			try {
 				System.out.println("\nMenú de opciones:");
@@ -157,27 +164,32 @@ public class Main {
 
 		System.out.println("Datos de la Reserva:");
 		System.out.println(reserva);
+		
+		if (reserva.isCancelado()) {
+			System.out.println("\nReserva ya esta pagada");
+			
+		}else {
+			double montoPendiente = reserva.calcularPagoPendiente();
+			System.out.println("Monto pendiente: $" + montoPendiente);
 
-		double montoPendiente = reserva.calcularPagoPendiente();
-		System.out.println("Monto pendiente: $" + montoPendiente);
+			System.out.print("Ingrese el monto a pagar: ");
+			double pago = scanner.nextDouble();
+			scanner.nextLine();
 
-		System.out.print("Ingrese el monto a pagar: ");
-		double pago = scanner.nextDouble();
-		scanner.nextLine();
+			if (pago > montoPendiente) {
+				System.out.println("Error: El monto ingresado excede el monto pendiente.");
+				return;
+			}
 
-		if (pago > montoPendiente) {
-			System.out.println("Error: El monto ingresado excede el monto pendiente.");
-			return;
+			reserva.setPagoAdelantado(reserva.getPagoAdelantado() + pago);
+			if (reserva.calcularPagoPendiente() <= 0) {
+				reserva.setCancelado(true);
+			}
+
+			ReservaDAO.actualizar(reserva);
+			System.out.println("Pago registrado exitosamente. Estado de la reserva: "
+					+ (reserva.isCancelado() ? "CANCELADO" : "PAGO PENDIENTE"));
 		}
-
-		reserva.setPagoAdelantado(reserva.getPagoAdelantado() + pago);
-		if (reserva.calcularPagoPendiente() >= 0) {
-			reserva.setCancelado(true);
-		}
-
-		ReservaDAO.actualizar(reserva);
-		System.out.println("Pago registrado exitosamente. Estado de la reserva: "
-				+ (reserva.isCancelado() ? "CANCELADO" : "PAGO PENDIENTE"));
 	}
 
 
@@ -241,14 +253,16 @@ public class Main {
 		}
 
 		double pagoAdelantado =	0;
-		Reserva reserva = new Reserva(cliente, salon, fecha, horaInicio, horaFin, pagoAdelantado, serviciosAdicionales, true);
+		Reserva reserva = new Reserva(cliente, salon, fecha, horaInicio, horaFin, pagoAdelantado, serviciosAdicionales, false);
 		System.out.print("¿Desea realizar un pago adelantado? (s/n): ");
 		if (scanner.nextLine().equalsIgnoreCase("s")) {
 			System.out.print("Ingrese el monto del pago adelantado: ");
 			pagoAdelantado = scanner.nextDouble();
 			scanner.nextLine(); 
 			reserva.setPagoAdelantado(pagoAdelantado);
-			
+			if (reserva.calcularPagoPendiente() <= 0) {
+				reserva.setCancelado(true);
+			}
 		}
 		
 
@@ -271,7 +285,7 @@ public class Main {
 		if (reserva == null) {
 			System.out.println("Reserva no encontrada.");
 		} else {
-			System.out.println("Datos de la Reserva:");
+			System.out.println("Datos de la Reserva seleccionada:");
 			System.out.println(reserva);
 		}
 	}
@@ -288,5 +302,21 @@ public class Main {
 		for (ServicioAdicional servicio : ServicioAdicionalDAO.obtenerTodos()) {
 			System.out.println(servicio);
 		}
+	}
+
+	public static void precargarSalones() {
+
+		SalonDAO.guardar(new Salon("Cosmos", 60, false, 50000));
+    	SalonDAO.guardar(new Salon("Esmeralda", 20, false, 25000));
+    	SalonDAO.guardar(new Salon("Galaxy", 100, true, 75000));
+
+	}
+	
+	public static void precargarServicios() {
+
+		ServicioAdicionalDAO.guardar(new ServicioAdicional("Cámara 360", 2500));;
+		ServicioAdicionalDAO.guardar(new ServicioAdicional("Cabina de fotos", 5000));
+		ServicioAdicionalDAO.guardar(new ServicioAdicional("Filmación", 10000));
+		ServicioAdicionalDAO.guardar(new ServicioAdicional("Pintacaritas", 1500));    
 	}
 }

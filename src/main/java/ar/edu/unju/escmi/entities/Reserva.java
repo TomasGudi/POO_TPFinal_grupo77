@@ -10,6 +10,7 @@ import java.util.List;
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reserva_id")
     private Long id;
 
     @ManyToOne(optional = false)
@@ -157,15 +158,14 @@ public class Reserva {
     @Override
     public String toString() {
         return "Reserva{" +
-               "ID=" + id +
-               ", Cliente=" + cliente.getNombre() + " " + cliente.getApellido() +
-               ", Salón=" + salon.getNombre() +
-               ", Fecha=" + fecha +
-               ", Hora Inicio=" + horaInicio +
-               ", Hora Fin=" + horaFin +
-               ", Pago Adelantado=" + pagoAdelantado +
-               ", Cancelado=" + (cancelado ? "CANCELADO" : "PAGO PENDIENTE") +
-               ", Estado=" + (estado ? "Activo" : "Inactivo") +
+               "ID =" + id +
+               ", Cliente = " + cliente.getNombre() + " " + cliente.getApellido() +
+               ", Salón = " + salon.getNombre() +
+               ", Fecha = " + fecha +
+               ", Hora de inicio = " + horaInicio +
+               ", Hora fin = " + horaFin +
+               ", Pago Adelantado = $" + pagoAdelantado +
+               ", Cancelado = " + (cancelado ? "CANCELADO" : "PAGO PENDIENTE: $" + calcularPagoPendiente()) +
                '}';
     }
 }
