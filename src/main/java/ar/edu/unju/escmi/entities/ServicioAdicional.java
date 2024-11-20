@@ -16,15 +16,14 @@ public class ServicioAdicional {
     private double precio;
 
     @Column(name = "estado", nullable = false)
-    private boolean estado;
+    private boolean estado = true;
 
 	public ServicioAdicional() {
 	}
 
-	public ServicioAdicional(String descripcion, double precio, boolean estado) {
+	public ServicioAdicional(String descripcion, double precio) {
 		this.descripcion = descripcion;
 		this.precio = precio;
-		this.estado = estado;
 	}
 
 	public Long getId() {
